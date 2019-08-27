@@ -114,28 +114,63 @@ class XbbModuleSite extends WeModuleSite
         include $this->template('bank');
     }
 
-    public function doWebConsult()
+    public function doWebProject()
     {
         global $_GPC, $_W;
         if ($_GPC['action'] == 'get')
         {
-            $consult = pdo_get('lv_suo_consult', ['consultid' => $_GPC['consultid']]);
-            $consult['addtime'] = date('Y-m-d H:i:s', $consult['addtime']);
-            return json_encode($consult);
+            $project = pdo_get('xbb_project', ['id' => $_GPC['id']]);
+            $project['trueimgurl'] = tomedia($project['imgurl']);
+            return json_encode($project);
         }
-        $sql = "select * from" . tablename('lv_suo_consult') . " where uniacid=" . $_W['uniacid'];
-        $consult = pdo_fetchall($sql);
+        if ($_GPC['action'] == 'del')
+        {
+            $result = pdo_delete('xbb_project', ['id' => $_GPC['id']]);
+            if ($result)
+            {
+                echo 'ok';
+                exit;
+            }
+        }
+        if ($_GPC['action'] == 'save')
+        {
+            $data = [
+                'name' => $_GPC['name'],
+                'imgurl' => $_GPC['imgurl'],
+                'sort' => $_GPC['sort'],
+                'uniacid' => $_W['uniacid'],
+            ];
+            if (!empty($_GPC['id']))
+            {
+                $result = pdo_update('xbb_project', $data, ['id' => $_GPC['id']]);
+                if (!empty($result))
+                {
+                    message('编辑成功', $this->createWebUrl('project'), 'success');
+                }
+            }
+            else
+            {
+                $data['create_time'] = time();
+                $result = pdo_insert('xbb_project', $data);
+                if (!empty($result))
+                {
+                    message('添加成功', $this->createWebUrl('project'), 'success');
+                }
+            }
+        }
+        $sql = "select * from" . tablename('xbb_project') . " where uniacid=" . $_W['uniacid'];
+        $project = pdo_fetchall($sql);
         // 分页开始
-        $total = count($consult);
+        $total = count($project);
         $pageindex = max($_GPC['page'], 1);
         $pagesize = 2;
         $page = pagination($total, $pageindex, $pagesize);
         $p = ($pageindex - 1) * 2;
-        $sql .= " order by consultid desc limit " . $p . " , " . $pagesize;
-        $consult = pdo_fetchall($sql);
+        $sql .= " order by id desc limit " . $p . " , " . $pagesize;
+        $project = pdo_fetchall($sql);
         // 分页結束
         load()->func('tpl');
-        include $this->template('consult');
+        include $this->template('project');
     }
 
 }

@@ -1,0 +1,115 @@
+{template 'common/header'}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        服务项目管理
+    </div>
+    <div class="panel-body">
+        <a href="#" class="btn btn-primary btn-add" data-toggle="modal" data-target="#myModal" style="margin-bottom: 30px;">
+            <i class="glyphicon glyphicon-plus"></i>添加项目
+        </a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center" width="20%">名称</th>
+                    <th class="text-center" width="20%">图标</th>
+                    <th class="text-center" width="10%">排序</th>
+                    <th class="text-center" width="20%">添加时间</th>
+                    <th class="text-center" width="30%">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop $project $index $item}
+                <tr>
+                    <td class="text-center">{$item['name']}</td>
+                    <td class="text-center"><img  width="50%" src="{php echo tomedia($item['imgurl'])}" ></td>
+                    <td class="text-center">{$item['sort']}</td>
+                    <td class="text-center">{php echo date('Y-m-d H：i:s',$item['create_time'])}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-xs btn-edit" data-toggle="modal" data-target="#myModal" id="{$item['id']}">编辑</button>
+                        <button type="button" class="btn btn-danger btn-xs btn-del" id="{$item['id']}">删除</button>
+                    </td>
+                </tr>
+                {/loop}
+            </tbody>
+        </table>
+        {$page}
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index: 1030;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" action="{php echo $this->createWebUrl('project');}&action=save" method="post">
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name" placeholder="请输入名称">
+                            <input type="hidden" name='id'/>
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">图片</label>
+                        <div class="col-sm-10">
+                            {php echo tpl_form_field_image('imgurl');}
+                            <input type="hidden" name='id'/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">排序</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="sort" placeholder="请输入数字">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-danger">提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{template 'common/footer'}
+
+<script>
+    $(function () {
+        $('.btn-add').click(function () {
+            $('#myModalLabel').html('服务项目添加');
+            $("input[name='name']").val('');
+            $("input[name='imgurl']").val('');
+            $("input[name='id']").val('');
+            $('.img-responsive').attr('src', '');
+        });
+        $('.btn-edit').click(function () {
+            $('#myModalLabel').html('服务项目编辑');
+            var id = $(this).attr('id');
+            $.get("{php echo $this->createWebUrl('project')}" + "&action=get&id=" + id, function (result) {
+                var data = $.parseJSON(result);
+                $("input[name='name']").val(data.name);
+                $("input[name='imgurl']").val(data.imgurl);
+                $("input[name='id']").val(data.id);
+                $('.img-responsive').attr('src', data.trueimgurl);
+                $("input[name='sort']").val(data.sort);
+            });
+        });
+        $('.btn-del').click(function () {
+            var id = $(this).attr('id');
+            var obj = $(this);
+            layer.confirm('确认要删除吗？', {icon: 3, title: '提示'}, function (index) {
+                $.get("{php echo $this->createWebUrl('project')}" + "&action=del&id=" + id, function (result) {
+                    if (result == 'ok') {
+                        obj.parents("tr").remove();
+                        layer.msg('已成功删除!', {icon: 1, time: 1000});
+                    }
+                });
+            });
+        });
+    });
+</script>
