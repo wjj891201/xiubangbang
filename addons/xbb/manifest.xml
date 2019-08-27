@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.we7.cc" versionCode="">
+    <application setting="false">
+        <name><![CDATA[修帮帮]]></name>
+        <identifie><![CDATA[xbb]]></identifie>
+        <version><![CDATA[1.0]]></version>
+        <type><![CDATA[other]]></type>
+        <ability><![CDATA[修帮帮]]></ability>
+        <description><![CDATA[修帮帮]]></description>
+        <author><![CDATA[wmc]]></author>
+        <url><![CDATA[]]></url>
+    </application>
+    <platform>
+        <subscribes>
+        </subscribes>
+        <handles>
+        </handles>
+        <rule embed="false" />
+        <card embed="false" />
+        <supports>
+            <item type="wxapp" />
+        </supports>
+    </platform>
+    <bindings>
+        <menu>
+            <entry title="轮播图片" do="picture" state="" direct="false" icon="wi wi-appjurisdiction" displayorder="10"/>
+            <entry title="银行" do="bank" state="" direct="false" icon="wi wi-wxapp-apply" displayorder="9" />
+            <entry title="服务项目" do="project" state="" direct="false" icon="wi wi-wxapp" displayorder="8" />
+            <entry title="入驻列表" do="apply" state="" direct="false" icon="wi wi-article" displayorder="7" />
+            <entry title="用户列表" do="user" state="" direct="false" icon="wi wi-user" displayorder="6" />
+        </menu>
+        <page>
+            <entry title="首页" do="/xbb/pages/index/index" state="" direct="" />
+        </page>
+    </bindings>
+    <permissions>
+    </permissions>
+    <install><![CDATA[]]></install>
+    <uninstall><![CDATA[]]></uninstall>
+    <upgrade><![CDATA[]]></upgrade>
+</manifest>
