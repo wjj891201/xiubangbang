@@ -1,0 +1,42 @@
+{template 'common/header'}
+<div class="panel panel-default" style="margin-top: 20px;">
+    <div class="panel-heading">
+        入驻列表
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">机构名称</th>
+                    <th class="text-center">手机号</th>
+                    <th class="text-center">维修项目</th>
+                    <th class="text-center">常驻地址</th>
+                    <th class="text-center">服务区域</th>
+                    <th class="text-center">营业时间</th>
+                    <th class="text-center">起步价</th>
+                    <th class="text-center">银行卡号</th>
+                    <th class="text-center">银行</th>
+                    <th class="text-center">身份证照</th>
+                    <th class="text-center">营业执照</th>
+                    <th class="text-center">城市</th>
+                    <th class="text-center">审核状态</th>
+                    <th class="text-center">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop $bank $index $item}
+                <tr>
+                    <td class="text-center">{$item['name']}</td>
+                    <td class="text-center">{php echo date('Y-m-d H:i:s',$item['create_time'])}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-xs btn-edit" data-toggle="modal" data-target="#myModal" id="{$item['id']}">编辑</button>
+                        <button type="button" class="btn btn-danger btn-xs btn-del" id="{$item['id']}">删除</button>
+                    </td>
+                </tr>
+                {/loop}
+            </tbody>
+        </table>
+        {$page}
+    </div>
+</div>
+{template 'common/footer'}

@@ -114,6 +114,9 @@ class XbbModuleSite extends WeModuleSite
         include $this->template('bank');
     }
 
+    /**
+     * 维修项目添加、编辑、删除
+     */
     public function doWebProject()
     {
         global $_GPC, $_W;
@@ -171,6 +174,26 @@ class XbbModuleSite extends WeModuleSite
         // 分页結束
         load()->func('tpl');
         include $this->template('project');
+    }
+
+    /**
+     * 维修项目添加、编辑、删除
+     */
+    public function doWebApply()
+    {
+        global $_GPC, $_W;
+        $sql = "select * from" . tablename('xbb_apply') . " where uniacid=" . $_W['uniacid'];
+        $project = pdo_fetchall($sql);
+        // 分页开始
+        $total = count($project);
+        $pageindex = max($_GPC['page'], 1);
+        $pagesize = 2;
+        $page = pagination($total, $pageindex, $pagesize);
+        $p = ($pageindex - 1) * 2;
+        $sql .= " order by id desc limit " . $p . " , " . $pagesize;
+        $project = pdo_fetchall($sql);
+        load()->func('tpl');
+        include $this->template('apply');
     }
 
 }
