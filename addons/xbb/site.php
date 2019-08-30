@@ -99,7 +99,7 @@ class XbbModuleSite extends WeModuleSite
                 }
             }
         }
-        $sql = "select * from" . tablename('xbb_bank') . " where uniacid=" . $_W['uniacid'];
+        $sql = "select * from " . tablename('xbb_bank') . " where uniacid=" . $_W['uniacid'];
         $bank = pdo_fetchall($sql);
         // 分页开始
         $total = count($bank);
@@ -161,7 +161,7 @@ class XbbModuleSite extends WeModuleSite
                 }
             }
         }
-        $sql = "select * from" . tablename('xbb_project') . " where uniacid=" . $_W['uniacid'];
+        $sql = "select * from " . tablename('xbb_project') . " where uniacid=" . $_W['uniacid'];
         $project = pdo_fetchall($sql);
         // 分页开始
         $total = count($project);
@@ -182,16 +182,21 @@ class XbbModuleSite extends WeModuleSite
     public function doWebApply()
     {
         global $_GPC, $_W;
-        $sql = "select * from" . tablename('xbb_apply') . " where uniacid=" . $_W['uniacid'];
-        $project = pdo_fetchall($sql);
+        $sql = "select xa.*,xp.name project_name,xb.name bank_name, " .
+                "(CASE WHEN xa.status = 1 THEN '通过' WHEN xa.status = 2 then '不通过' ELSE '待审核' END) AS status_ch from " .
+                tablename('xbb_apply') . " as xa left join " .
+                tablename('xbb_project') . " as xp on xa.project_id=xp.id left join " .
+                tablename('xbb_bank') . " as xb on xa.bank_type=xb.id " .
+                "where xa.uniacid=" . $_W['uniacid'];
+        $apply = pdo_fetchall($sql);
         // 分页开始
-        $total = count($project);
+        $total = count($apply);
         $pageindex = max($_GPC['page'], 1);
         $pagesize = 2;
         $page = pagination($total, $pageindex, $pagesize);
         $p = ($pageindex - 1) * 2;
-        $sql .= " order by id desc limit " . $p . " , " . $pagesize;
-        $project = pdo_fetchall($sql);
+        $sql .= " order by xa.id desc limit " . $p . " , " . $pagesize;
+        $apply = pdo_fetchall($sql);
         load()->func('tpl');
         include $this->template('apply');
     }
