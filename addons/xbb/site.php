@@ -182,6 +182,19 @@ class XbbModuleSite extends WeModuleSite
     public function doWebApply()
     {
         global $_GPC, $_W;
+        $where = 'xa.uniacid=' . $_W['uniacid'];
+        if (!empty($_GPC['p_id']) && empty($_GPC['keyword']))
+        {
+            $where .= ' AND xa.project_id=' . $_GPC['p_id'];
+        }
+        if (empty($_GPC['p_id']) && !empty($_GPC['keyword']))
+        {
+            $where .= " AND xa.name LIKE '%{$_GPC['keyword']}%'";
+        }
+        if (!empty($_GPC['p_id']) && !empty($_GPC['keyword']))
+        {
+            $where .= ' AND xa.project_id=' . $_GPC['p_id'] . " AND xa.name LIKE '%{$_GPC['keyword']}%'";
+        }
         if ($_GPC['action'] == 'get')
         {
             $apply = pdo_get('xbb_apply', ['id' => $_GPC['id']]);
@@ -208,7 +221,7 @@ class XbbModuleSite extends WeModuleSite
                 tablename('xbb_apply') . " as xa left join " .
                 tablename('xbb_project') . " as xp on xa.project_id=xp.id left join " .
                 tablename('xbb_bank') . " as xb on xa.bank_type=xb.id " .
-                "where xa.uniacid=" . $_W['uniacid'];
+                "where " . $where;
         $apply = pdo_fetchall($sql);
         // 分页开始
         $total = count($apply);

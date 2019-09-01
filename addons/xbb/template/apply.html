@@ -6,14 +6,15 @@
     <input type="hidden" name="m" value="{php echo $this->modulename}" />
     <div class="form-group">
         <div class="col-sm-2">
-            <select name="type" id="type" class="form-control">
-                <option value="0" {if $_GPC['type']==0} selected="selected" {/if} >搜索类型</option>
-                <option value="1" {if $_GPC['type']==1} selected="selected" {/if}>用户昵称</option>
-                <option value="2" {if $_GPC['type']==2} selected="selected" {/if}>手机号码</option>
+            <select name="p_id" class="form-control">
+                <option value="">请选择</option>
+                {loop $project_arr $index $item}
+                <option {if $_GPC['p_id']==$item['id']} selected="selected" {/if} value="{$item['id']}">{$item['name']}</option>    
+                {/loop}
             </select>
         </div>
         <div class="col-sm-3">
-            <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入搜索关键词" />
+            <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="机构名称" />
         </div>
         <div class="col-sm-1">
             <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
