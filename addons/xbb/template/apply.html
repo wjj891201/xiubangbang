@@ -1,4 +1,25 @@
 {template 'common/header'}
+<form action="./index.php" method="get" class="we7-form" role="form">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="do" value="{$_GPC[do]}" />
+    <input type="hidden" name="m" value="{php echo $this->modulename}" />
+    <div class="form-group">
+        <div class="col-sm-2">
+            <select name="type" id="type" class="form-control">
+                <option value="0" {if $_GPC['type']==0} selected="selected" {/if} >搜索类型</option>
+                <option value="1" {if $_GPC['type']==1} selected="selected" {/if}>用户昵称</option>
+                <option value="2" {if $_GPC['type']==2} selected="selected" {/if}>手机号码</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入搜索关键词" />
+        </div>
+        <div class="col-sm-1">
+            <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+        </div>
+    </div>
+</form>
 <div class="panel panel-default" style="margin-top: 20px;">
     <div class="panel-heading">
         入驻列表
@@ -33,7 +54,7 @@
                     <td class="text-center">{$item['bank_name']}</td>
                     <td class="text-center"></td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-primary btn-xs">{$item['status_ch']}</button>
+                        <button type="button" class="btn <?php if($item['status']==2):?>btn-danger<?php else:?>btn-primary<?php endif;?> btn-xs">{$item['status_ch']}</button>
                     </td>
                     <td class="text-center">
                         <button type="button" class="btn btn-primary btn-xs btn-edit" data-toggle="modal" data-target="#myModal" id="{$item['id']}">查看</button>
@@ -46,7 +67,7 @@
     </div>
 </div>
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index: 1030;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -54,11 +75,101 @@
                 <h4 class="modal-title" id="myModalLabel">查看详情</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                    <label for="firstname" class="col-sm-2 control-label">名称</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="name" placeholder="请输入银行名称">
+                <form class="form-horizontal" role="form" action="{php echo $this->createWebUrl('apply');}&action=save" method="post">
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">机构名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name" placeholder="机构名称" readonly="readonly" />
+                        </div>
                     </div> 
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">电话号码</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="telphone" placeholder="电话号码" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">维修项目</label>
+                        <div class="col-sm-10">
+                            <select name="project_id" id="project_id" class="form-control" disabled="disabled">
+                                <option value="">请选择</option>
+                                {loop $project_arr $index $item}
+                                <option value="{$item['id']}">{$item['name']}</option>    
+                                {/loop}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">常驻地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="address" placeholder="常驻地址" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">服务区域</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="server_area" placeholder="服务区域" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">营业时间</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="business_hours" placeholder="营业时间" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">起步价</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="start_price" placeholder="起步价" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">店铺介绍</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="introduce" placeholder="店铺介绍">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">银行卡号</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="bank_card" placeholder="银行卡号" readonly="readonly" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">银行</label>
+                        <div class="col-sm-10">
+                            <select name="bank_type" id="bank_type" class="form-control" disabled="disabled">
+                                <option value="">请选择</option>
+                                {loop $bank_arr $index $item}
+                                <option value="{$item['id']}">{$item['name']}</option>    
+                                {/loop}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">身份证照</label>
+                        <div class="col-sm-10">
+                            {php echo tpl_form_field_image('identity_photo');}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">营业执照</label>
+                        <div class="col-sm-10">
+                            {php echo tpl_form_field_image('business_license');}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">审核状态</label>
+                        <div class="col-sm-10" style="padding-top: 8px;">
+                            <input type="radio" name="status" value="1">通过&nbsp;&nbsp;&nbsp;<input type="radio" name="status" value="2">拒绝
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input type="hidden" name='id'/>
+                            <button type="submit" class="btn btn-danger">提交</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -69,12 +180,22 @@
 <script>
     $(function () {
         $('.btn-edit').click(function () {
-            var consultid = $(this).attr('consultid');
-            $.get("{php echo $this->createWebUrl('consult')}" + "&action=get&consultid=" + consultid, function (result) {
+            var id = $(this).attr('id');
+            $.get("{php echo $this->createWebUrl('apply')}" + "&action=get&id=" + id, function (result) {
                 var data = $.parseJSON(result);
-                $(".phone").html(data.phone);
-                $('.addtime').html(data.addtime);
-                $('.content').html(data.content);
+                $.each(data, function (index, obj) {
+                    if (index === 'project_id' || index === 'bank_type') {
+                        $("select[name='" + index + "']").find("option[value='" + obj + "']").attr("selected", true);
+                    } else if (index === 'true_identity_photo') {
+                        $('.img-responsive').eq(0).attr('src', obj);
+                    } else if (index === 'true_business_license') {
+                        $('.img-responsive').eq(1).attr('src', obj);
+                    } else if (index === 'status') {
+                        $("input:radio[name=status][value=" + obj + "]").attr("checked", true);
+                    } else {
+                        $("input[name='" + index + "']").val(obj);
+                    }
+                });
             });
         });
     });

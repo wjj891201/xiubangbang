@@ -182,8 +182,29 @@ class XbbModuleSite extends WeModuleSite
     public function doWebApply()
     {
         global $_GPC, $_W;
+        if ($_GPC['action'] == 'get')
+        {
+            $apply = pdo_get('xbb_apply', ['id' => $_GPC['id']]);
+            $apply['true_identity_photo'] = tomedia($apply['identity_photo']);
+            $apply['true_business_license'] = tomedia($apply['business_license']);
+            return json_encode($apply);
+        }
+        if ($_GPC['action'] == 'save')
+        {
+            $data = [
+                'status' => $_GPC['status']
+            ];
+            if (!empty($_GPC['id']))
+            {
+                $result = pdo_update('xbb_apply', $data, ['id' => $_GPC['id']]);
+                if (!empty($result))
+                {
+                    message('审核成功', $this->createWebUrl('apply'), 'success');
+                }
+            }
+        }
         $sql = "select xa.*,xp.name project_name,xb.name bank_name, " .
-                "(CASE WHEN xa.status = 1 THEN '通过' WHEN xa.status = 2 then '不通过' ELSE '待审核' END) AS status_ch from " .
+                "(CASE WHEN xa.status = 1 THEN '通过' WHEN xa.status = 2 then '拒绝' ELSE '待审核' END) AS status_ch from " .
                 tablename('xbb_apply') . " as xa left join " .
                 tablename('xbb_project') . " as xp on xa.project_id=xp.id left join " .
                 tablename('xbb_bank') . " as xb on xa.bank_type=xb.id " .
@@ -197,6 +218,10 @@ class XbbModuleSite extends WeModuleSite
         $p = ($pageindex - 1) * 2;
         $sql .= " order by xa.id desc limit " . $p . " , " . $pagesize;
         $apply = pdo_fetchall($sql);
+        // 查询服务项目
+        $project_arr = pdo_getall('xbb_project', ['uniacid' => $_W['uniacid']], ['id', 'name'], '', ['sort' => SORT_DESC]);
+        // 查询银行
+        $bank_arr = pdo_getall('xbb_bank', ['uniacid' => $_W['uniacid']], ['id', 'name']);
         load()->func('tpl');
         include $this->template('apply');
     }
