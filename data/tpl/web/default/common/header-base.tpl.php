@@ -37,6 +37,7 @@
 	<script>var require = { urlArgs: 'v=20170915' };</script>
 	<script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="./resource/js/layer/layer.js"></script>
+        <script type="text/javascript" src="./resource/js/jquery.validate.js"></script>
 	<script type="text/javascript" src="./resource/js/lib/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./resource/js/app/util.js?v=20170915"></script>
 	<script type="text/javascript" src="./resource/js/app/common.min.js?v=20170915"></script>
