@@ -1,0 +1,55 @@
+{template 'common/header'}
+<div class="alert we7-page-alert">
+    <p>
+        <i class="wi wi-info-sign"></i> 
+        总数：<strong class="text-danger">{if $total}{$total}{else}0{/if}人</strong>。
+    </p>
+</div>
+<form action="./index.php" method="get" class="we7-form" role="form">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="do" value="{$_GPC[do]}" />
+    <input type="hidden" name="m" value="{php echo $this->modulename}" />
+    <div class="form-group">
+        <div class="col-sm-2">
+            <select name="type" id="type" class="form-control">
+                <option value="0" {if $_GPC['type']==0} selected="selected" {/if} >搜索类型</option>
+                <option value="1" {if $_GPC['type']==1} selected="selected" {/if}>用户昵称</option>
+                <option value="2" {if $_GPC['type']==2} selected="selected" {/if}>手机号码</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入搜索关键词" />
+        </div>
+        <div class="col-sm-1">
+            <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+        </div>
+    </div>
+</form>
+
+<div class="clearfix">
+    <table class="table we7-table table-hover article-list">
+        <tbody>
+            <tr>
+                <th class="text-center" width="10%">用户ID</th>
+                <th class="text-center" width="20%">用户OPENID</th>
+                <th class="text-center" width="15%">用户头像</th>
+                <th class="text-center" width="20%">昵称</th>
+                <th class="text-center" width="20%">手机号码</th>
+                <th class="text-center" width="15%">注册时间</th>
+            </tr>
+            {loop $member $index $item}
+            <tr>
+                <td class="text-center">{$item['id']}</td>
+                <td class="text-center">{$item['openid']}</td>
+                <td class="text-center"><img src="{php echo tomedia($item['avatar'])}" width="15%"></td>
+                <td class="text-center">{$item['nickname']}</td>
+                <td class="text-center">{if $item['mobile']}{$item['mobile']}{else}未绑定{/if}</td>
+                <td class="text-center">{php echo date("Y-m-d H:i",$item['addtime']);}</td>
+            </tr>
+            {/loop}
+        </tbody>
+    </table>
+</div>
+{$page}
+{template 'common/footer'}

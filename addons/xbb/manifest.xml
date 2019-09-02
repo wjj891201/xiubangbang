@@ -27,7 +27,7 @@
             <entry title="银行" do="bank" state="" direct="false" icon="wi wi-wxapp-apply" displayorder="9" />
             <entry title="服务项目" do="project" state="" direct="false" icon="wi wi-wxapp" displayorder="8" />
             <entry title="入驻列表" do="apply" state="" direct="false" icon="wi wi-article" displayorder="7" />
-            <entry title="用户列表" do="user" state="" direct="false" icon="wi wi-user" displayorder="6" />
+            <entry title="用户列表" do="member" state="" direct="false" icon="wi wi-user" displayorder="6" />
         </menu>
         <page>
             <entry title="首页" do="/xbb/pages/index/index" state="" direct="" />

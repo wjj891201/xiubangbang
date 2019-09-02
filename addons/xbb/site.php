@@ -166,7 +166,7 @@ class XbbModuleSite extends WeModuleSite
         // 分页开始
         $total = count($project);
         $pageindex = max($_GPC['page'], 1);
-        $pagesize = 2;
+        $pagesize = 10;
         $page = pagination($total, $pageindex, $pagesize);
         $p = ($pageindex - 1) * 2;
         $sql .= " order by id desc limit " . $p . " , " . $pagesize;
@@ -226,7 +226,7 @@ class XbbModuleSite extends WeModuleSite
         // 分页开始
         $total = count($apply);
         $pageindex = max($_GPC['page'], 1);
-        $pagesize = 2;
+        $pagesize = 10;
         $page = pagination($total, $pageindex, $pagesize);
         $p = ($pageindex - 1) * 2;
         $sql .= " order by xa.id desc limit " . $p . " , " . $pagesize;
@@ -237,6 +237,41 @@ class XbbModuleSite extends WeModuleSite
         $bank_arr = pdo_getall('xbb_bank', ['uniacid' => $_W['uniacid']], ['id', 'name']);
         load()->func('tpl');
         include $this->template('apply');
+    }
+
+    /**
+     * 用户的管理
+     */
+    public function doWebMember()
+    {
+        global $_GPC, $_W;
+        $where = " where uniacid=" . $_W['uniacid'];
+        if ($_GPC['type'] == 1)
+        {
+            if (!empty($_GPC['keyword']))
+            {
+                $where .= " AND nickname LIKE '%{$_GPC['keyword']}%'";
+            }
+        }
+        if ($_GPC['type'] == 2)
+        {
+            if (!empty($_GPC['keyword']))
+            {
+                $where .= " AND mobile LIKE '%{$_GPC['keyword']}%'";
+            }
+        }
+        $sql = 'select * from ' . tablename('xbb_member') . $where;
+        // 分页开始
+        $total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('xbb_member') . $where);
+        $pageindex = max($_GPC['page'], 1);
+        $pagesize = 10;
+        $page = pagination($total, $pageindex, $pagesize);
+        $p = ($pageindex - 1) * 2;
+        $sql .= " order by id desc limit " . $p . " , " . $pagesize;
+        $member = pdo_fetchall($sql);
+        // 分页結束
+        load()->func('tpl');
+        include $this->template('member');
     }
 
 }
