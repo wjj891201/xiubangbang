@@ -17,6 +17,8 @@ if ($module_do == 'savefile')
     }
     $filepath = 'images/xbb/apply/';
     $result = saveWxappImg($filepath . $filename, $filename, $code);
+    var_dump($result);
+    exit;
     if ($result['errno'] < 0)
     {
         return $this->result(-1, $result['message']);

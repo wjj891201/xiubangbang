@@ -58,6 +58,7 @@ class XbbModuleWxapp extends WeModuleWxapp
             'name' => $_GPC['name'],
             'telphone' => $_GPC['telphone'],
             'address' => $_GPC['address'],
+            'identity_photo' => $_GPC['identity_photo'],
             'addtime' => time(),
             'uniacid' => $_W['uniacid'],
         ];
@@ -66,6 +67,17 @@ class XbbModuleWxapp extends WeModuleWxapp
         {
             $this->result(0, '提交成功', ['status' => 'success']);
         }
+    }
+
+    /**
+     * 上传图片
+     */
+    public function doPageUploadimg()
+    {
+        global $_GPC, $_W;
+        load()->func('file');
+        $result = file_upload($_FILES['file'], 'image');
+        $this->result(0, '上传成功', $result);
     }
 
     /**
