@@ -49,6 +49,26 @@ class XbbModuleWxapp extends WeModuleWxapp
     }
 
     /**
+     * 申请
+     */
+    public function doPageApply()
+    {
+        global $_GPC, $_W;
+        $data = [
+            'name' => $_GPC['name'],
+            'telphone' => $_GPC['telphone'],
+            'address' => $_GPC['address'],
+            'addtime' => time(),
+            'uniacid' => $_W['uniacid'],
+        ];
+        $result = pdo_insert('xbb_apply', $data);
+        if (!empty($result))
+        {
+            $this->result(0, '提交成功', ['status' => 'success']);
+        }
+    }
+
+    /**
      * 优质解答
      */
 //    public function doPageAnswer()
