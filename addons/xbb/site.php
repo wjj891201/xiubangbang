@@ -7,7 +7,8 @@ require IA_ROOT . '/addons/xbb/core/common/defines.php';
 require XW_CORE . 'class/xwloader.class.php';
 
 //懒加载
-if (file_exists(XW_AUTOLOAD)) {
+if (file_exists(XW_AUTOLOAD))
+{
     require XW_AUTOLOAD;
 }
 
@@ -16,19 +17,22 @@ xwload()->func('global');
 class XbbModuleSite extends WeModuleSite
 {
 
-    
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         global $_W, $_GPC;
-        
+
         $isMobile = stripos($name, 'doMobile') === 0;
-        if ($isMobile) {
+        if ($isMobile)
+        {
             $dir = XW_PATH;
-            if ($isMobile) {
+            if ($isMobile)
+            {
                 $dir .= 'mobile/';
                 $controller = strtolower(substr($name, 8));
             }
             $file = $dir . 'index.php';
-            if (file_exists($file)) {
+            if (file_exists($file))
+            {
                 require $file;
                 exit;
             }
@@ -37,7 +41,7 @@ class XbbModuleSite extends WeModuleSite
         return null;
     }
 
-        /**
+    /**
      * 轮播图添加、编辑、删除
      */
     public function doWebPicture()

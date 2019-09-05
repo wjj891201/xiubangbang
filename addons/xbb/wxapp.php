@@ -6,15 +6,35 @@ class XbbModuleWxapp extends WeModuleWxapp
 {
 
     /**
-     * 获取openid
+     * 获取电话和openid
      */
     public function doPageGetopenid()
     {
         global $_GPC, $_W;
-        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$_W['account']['key']}&secret={$_W['account']['secret']}&js_code={$_GPC['code']}&grant_type=authorization_code";
+        require 'core/class/PHP/wXBizDataCrypt.php';
+
+        $APPID = $_W['account']['key'];
+        $AppSecret = $_W['account']['secret'];
+
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$APPID}&secret={$AppSecret}&js_code={$_GPC['code']}&grant_type=authorization_code";
         $result = file_get_contents($url);
-        $data = json_decode($result, true);
-        $this->result(0, '获取openid', $data);
+        $arr = json_decode($result, true);
+        $session_key = $arr['session_key'];
+        $openid = $arr['openid'];
+
+        $pc = new \WXBizDataCrypt($APPID, $session_key);
+        $iv = $_GPC['iv'];
+        $encryptedData = $_GPC['encryptedData'];
+        $errCode = $pc->decryptData($encryptedData, $iv, $data);
+        if ($errCode == 0)
+        {
+            $info = json_decode($data, true);
+            $this->result(0, '获取电话和openid', ['mobile' => $info['purePhoneNumber'], 'openid' => $openid]);
+        }
+        else
+        {
+            $this->result(1, '获取电话和openid失败');
+        }
     }
 
     /**
