@@ -2,10 +2,42 @@
 
 defined('IN_IA') or exit('Access Denied');
 
+
+require IA_ROOT . '/addons/xbb/core/common/defines.php';
+require XW_CORE . 'class/xwloader.class.php';
+
+//懒加载
+if (file_exists(XW_AUTOLOAD)) {
+    require XW_AUTOLOAD;
+}
+
+xwload()->func('global');
+
 class XbbModuleSite extends WeModuleSite
 {
 
-    /**
+    
+    public function __call($name, $arguments) {
+        global $_W, $_GPC;
+        
+        $isMobile = stripos($name, 'doMobile') === 0;
+        if ($isMobile) {
+            $dir = XW_PATH;
+            if ($isMobile) {
+                $dir .= 'mobile/';
+                $controller = strtolower(substr($name, 8));
+            }
+            $file = $dir . 'index.php';
+            if (file_exists($file)) {
+                require $file;
+                exit;
+            }
+        }
+        trigger_error("访问的方法 {$name} 不存在.", E_USER_WARNING);
+        return null;
+    }
+
+        /**
      * 轮播图添加、编辑、删除
      */
     public function doWebPicture()

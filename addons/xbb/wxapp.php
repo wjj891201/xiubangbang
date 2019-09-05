@@ -4,15 +4,43 @@ defined('IN_IA') or exit('Access Denied');
 
 class XbbModuleWxapp extends WeModuleWxapp
 {
-//    public function doPageCode()
-//    {
-//        global $_GPC, $_W;
-//        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$_W['account']['key']}&secret={$_W['account']['secret']}&js_code={$_GPC['code']}&grant_type=authorization_code";
-//        $result = file_get_contents($url);
-//        $result = json_decode($result, true);
-//        $data = $result;
-//        $this->result(0, '获取openid', $data);
-//    }
+
+    /**
+     * 获取openid
+     */
+    public function doPageGetopenid()
+    {
+        global $_GPC, $_W;
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$_W['account']['key']}&secret={$_W['account']['secret']}&js_code={$_GPC['code']}&grant_type=authorization_code";
+        $result = file_get_contents($url);
+        $data = json_decode($result, true);
+        
+        
+        
+        $this->result(0, '获取openid', $data);
+    }
+
+    /**
+     * 微信用户
+     */
+    public function doPageEditmember()
+    {
+        global $_W, $_GPC;
+        $data = [
+            'nickname' => $_GPC['nickname'],
+            'avatar' => $_GPC['avatar'],
+            'openid' => $_GPC['openid'],
+            'addtime' => $_W['timestamp'],
+            'uniacid' => $_W['uniacid']
+        ];
+        $member = pdo_get('xbb_member', ['openid' => $_GPC['openid']]);
+        if (!$member)
+        {
+            pdo_insert('xbb_member', $data);
+        }
+        $info = pdo_get('xbb_member', ['openid' => $_GPC['openid']]);
+        return $this->result(0, 'success', ['user' => $info]);
+    }
 
     /**
      * 首页轮播图片
